@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 env:
   CARGO_TERM_COLOR: always
 
@@ -23,7 +26,7 @@ jobs:
         cargo test --verbose
     - name: Install wasm-pack
       run: |
-       cargo install wasm-pack
+        yarn global add wasm-pack
     - name: Build wasm
       run: |
             cd crates/unitdc-web && wasm-pack build --target web
