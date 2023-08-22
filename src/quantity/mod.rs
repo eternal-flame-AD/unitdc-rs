@@ -48,6 +48,19 @@ impl Quantity {
             use_derived_unit: Vec::new(),
         }
     }
+    pub fn number_in_derived_unit(&self) -> BigRational {
+        let mut number = self.number.clone();
+
+        for d in &self.use_derived_unit {
+            if d.exponents == self.unit {
+                number -= d.offset.clone();
+                number /= d.scale.clone();
+                return number;
+            }
+        }
+
+        number
+    }
 }
 
 impl Display for Quantity {

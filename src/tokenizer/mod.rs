@@ -151,6 +151,7 @@ impl<R: std::io::Read> Tokenizer<R> {
             Some('c') => Ok(Some(Token::Operator('c'))),
             Some('d') => Ok(Some(Token::Operator('d'))),
             Some('r') => Ok(Some(Token::Operator('r'))),
+            Some('s') => Ok(Some(Token::Operator('s'))),
             Some('#') => {
                 while let Some(c) = self.next_char().map_err(TokenizerError::IOError)? {
                     match c {

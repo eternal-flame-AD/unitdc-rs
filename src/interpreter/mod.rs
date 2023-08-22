@@ -47,6 +47,8 @@ pub enum InterpreterError {
     UndefinedVariable(String),
     #[error("Incompatible units: {0}")]
     IncompatibleUnits(UnitCombo),
+    #[error("No solution: {0}")]
+    NoSolution(String),
     #[error("Already defined: {0}")]
     AlreadyDefined(String),
 }
@@ -83,6 +85,7 @@ impl<'a> Interpreter<'a> {
                 Token::Operator('c') => self.op_c()?,
                 Token::Operator('d') => self.op_d()?,
                 Token::Operator('r') => self.op_r()?,
+                Token::Operator('s') => self.op_s()?,
                 Token::VarRecall(name) => self.op_recall(&name)?,
                 Token::VarStore(name) => self.op_store(&name)?,
                 Token::MacroInvoke((name, args)) => match name.as_str() {

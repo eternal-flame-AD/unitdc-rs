@@ -1,0 +1,6 @@
+@base(usd) # define usd as a base unit
+0 (mi) 1 (gal) / 1 (mi) 1 (gal) / @derived(mpg) # define mpg as 1 mile per gallon
+3.4 (usd) 1 (gal) / # gas price
+0.36 (usd) 1 (kWh) / # electricity price
+36 (kWh) 100 (mi) / # electricity consumption
+3 (mpg) sp # solve for mpg

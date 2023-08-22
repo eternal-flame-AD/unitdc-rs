@@ -1,8 +1,12 @@
 use num_rational::BigRational;
+use num_traits::{FromPrimitive, ToPrimitive};
 
-use crate::quantity::{
-    units::{Unit, UnitCombo},
-    Quantity,
+use crate::{
+    linear_system::{transpose, LinearSystem},
+    quantity::{
+        units::{Unit, UnitCombo},
+        Quantity,
+    },
 };
 
 use super::{Interpreter, InterpreterError, InterpreterResult, Output};
@@ -137,6 +141,82 @@ impl<'a> Interpreter<'a> {
 
         self.stack.push(a);
         self.stack.push(b);
+
+        Ok(())
+    }
+    pub fn op_s(&mut self) -> InterpreterResult<()> {
+        let target = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
+
+        let n_src_quantities = target.number_in_derived_unit().to_integer();
+        if n_src_quantities.to_usize().unwrap_or(0) > self.stack.len() {
+            return Err(InterpreterError::StackUnderflow);
+        }
+        let src_quantities = self
+            .stack
+            .split_off(self.stack.len() - n_src_quantities.to_usize().unwrap_or(0));
+        let dst_unit = target.unit.reduce();
+        let mut units_involved = Vec::new();
+        for q in &src_quantities {
+            for u in &q.unit.0 {
+                if !units_involved.contains(&u.unit) {
+                    units_involved.push(u.unit.clone());
+                }
+            }
+        }
+        for u in &dst_unit.0 {
+            if !units_involved.contains(&u.unit) {
+                return Err(InterpreterError::IncompatibleUnits(dst_unit));
+            }
+        }
+        let mut result_coefs = Vec::with_capacity(units_involved.len());
+        for u in &units_involved {
+            let mut coef = 0;
+            for u2 in &dst_unit.0 {
+                if u2.unit == *u {
+                    coef = u2.exponent;
+                    break;
+                }
+            }
+            result_coefs.push(coef);
+        }
+        let mut unit_coefs = Vec::with_capacity(src_quantities.len());
+        for q in &src_quantities {
+            let mut unit_coef = Vec::with_capacity(units_involved.len());
+            for u in &units_involved {
+                let mut coef = 0;
+                for u2 in &q.unit.0 {
+                    if u2.unit == *u {
+                        coef = u2.exponent;
+                        break;
+                    }
+                }
+                unit_coef.push(coef);
+            }
+            unit_coefs.push(unit_coef);
+        }
+        let mut lin = LinearSystem::new_equation_system(transpose(&unit_coefs), result_coefs);
+        let soln = lin.solve();
+        if soln.is_none() {
+            return Err(InterpreterError::NoSolution(
+                "failed to solve unit conversion".to_string(),
+            ));
+        }
+        if lin.is_overdetermined() {
+            return Err(InterpreterError::NoSolution(
+                "Linear system is overdetermined".to_string(),
+            ));
+        }
+        if lin.is_underdetermined() {
+            return Err(InterpreterError::NoSolution(
+                "Linear system is underdetermined".to_string(),
+            ));
+        }
+        let mut result = Quantity::new(BigRational::from_usize(1).unwrap(), dst_unit);
+        for (q, coef) in src_quantities.into_iter().zip(soln.unwrap()) {
+            result.number *= q.number.pow(coef);
+        }
+        result.use_derived_unit = target.use_derived_unit;
+        self.stack.push(result);
 
         Ok(())
     }
