@@ -116,7 +116,7 @@ export function Keyboard(props: KeyboardProps) {
             </div>
             <div className="keyboard-col">
                 <TokenButton token="r" tokentype="operator" />
-                <div className="keyboard-key" data-tokentype="operator">r</div>
+                <TokenButton token="s" tokentype="operator" />
                 {
                     ["1", "g", "l", "iu"].map((token) => {
                         return (
