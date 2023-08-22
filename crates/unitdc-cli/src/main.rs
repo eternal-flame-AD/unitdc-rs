@@ -1,6 +1,7 @@
 use unitdc::interpreter::{Interpreter, Output};
 
 fn main() {
+    env_logger::init();
     let mut interpreter = Interpreter::new(Box::new(|output| match output {
         Output::Message(e) => eprintln!("message: {}", e),
         Output::Quantity(q) => println!("[0]: {}", q),
