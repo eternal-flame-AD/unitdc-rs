@@ -92,7 +92,12 @@ impl Add for Quantity {
 
         let number = self.number + rhs.number;
         let unit = self.unit;
-        let use_derived_unit = rhs.use_derived_unit;
+        let mut use_derived_unit = self.use_derived_unit.clone();
+        for d in &rhs.use_derived_unit {
+            if !use_derived_unit.contains(d) {
+                use_derived_unit.push(d.clone());
+            }
+        }
 
         Ok(Quantity {
             number,
@@ -112,7 +117,12 @@ impl Sub for Quantity {
 
         let number = self.number - rhs.number;
         let unit = self.unit;
-        let use_derived_unit = rhs.use_derived_unit;
+        let mut use_derived_unit = self.use_derived_unit.clone();
+        for d in &rhs.use_derived_unit {
+            if !use_derived_unit.contains(d) {
+                use_derived_unit.push(d.clone());
+            }
+        }
 
         Ok(Quantity {
             number,
@@ -128,7 +138,12 @@ impl Mul for Quantity {
     fn mul(self, rhs: Self) -> Self::Output {
         let number = self.number * rhs.number;
         let unit = self.unit * rhs.unit;
-        let use_derived_unit = rhs.use_derived_unit;
+        let mut use_derived_unit = Vec::new();
+        for lhs_d in &self.use_derived_unit {
+            for rhs_d in &rhs.use_derived_unit {
+                use_derived_unit.push(lhs_d.clone() * rhs_d.clone());
+            }
+        }
 
         Quantity {
             number,
@@ -144,7 +159,12 @@ impl Div for Quantity {
     fn div(self, rhs: Self) -> Self::Output {
         let number = self.number / rhs.number;
         let unit = self.unit / rhs.unit;
-        let use_derived_unit = rhs.use_derived_unit;
+        let mut use_derived_unit = Vec::new();
+        for lhs_d in &self.use_derived_unit {
+            for rhs_d in &rhs.use_derived_unit {
+                use_derived_unit.push(lhs_d.clone() / rhs_d.clone());
+            }
+        }
 
         Quantity {
             number,

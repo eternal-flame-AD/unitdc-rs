@@ -76,6 +76,32 @@ pub struct DerivedUnit {
     pub exponents: UnitCombo,
 }
 
+impl Mul for DerivedUnit {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        DerivedUnit {
+            symbol: format!("{}*{}", self.symbol, rhs.symbol),
+            offset: self.offset * rhs.scale.clone() + rhs.offset,
+            scale: self.scale * rhs.scale,
+            exponents: self.exponents * rhs.exponents,
+        }
+    }
+}
+
+impl Div for DerivedUnit {
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        DerivedUnit {
+            symbol: format!("{}/{}", self.symbol, rhs.symbol),
+            offset: self.offset * rhs.scale.clone() - rhs.offset,
+            scale: self.scale / rhs.scale,
+            exponents: self.exponents / rhs.exponents,
+        }
+    }
+}
+
 impl Display for DerivedUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.symbol)
