@@ -17,6 +17,7 @@ fn main() {
         .run_str(include_str!("../../../unitdc.rc"))
         .expect("unitdc.rc should run");
 
+    // REPL loop
     for line in std::io::stdin().lines() {
         let line = line.expect("line should exist");
         if let Err(e) = interpreter.run_str(&line) {

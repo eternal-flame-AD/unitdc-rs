@@ -124,12 +124,14 @@ impl Display for DerivedUnit {
     }
 }
 
+/// A `UnitExponent` is the combination of a base unit and an exponent.
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub struct UnitExponent {
     pub unit: BaseUnit,
     pub exponent: i32,
 }
 
+/// A `UnitCombo` is a combination of `UnitExponent`s, which described an arbitrary "unit".
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnitCombo(pub Vec<UnitExponent>);
 

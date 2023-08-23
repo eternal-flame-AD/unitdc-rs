@@ -12,10 +12,17 @@ use crate::{
 use super::{Interpreter, InterpreterError, InterpreterResult, Output};
 
 impl<'a> Interpreter<'a> {
+    /// A literal number input, pushes a unit-less quantity to the stack.
     pub fn op_number(&mut self, number: BigRational) -> InterpreterResult<()> {
         self.stack.push(Quantity::new(number, UnitCombo::new()));
         Ok(())
     }
+    /// A literal unit input.
+    ///
+    /// - If the unit is unit-less (1), the top of the stack will be converted to a unit-less quantity.
+    /// - If the top of the stack is a unit-less quantity, it will be converted to the given unit.
+    /// - If the top of the stack is a quantity with equivalent units, it will be converted to the given unit.
+    /// - Otherwise, an error will be returned.
     pub fn op_unit(&mut self, unit: &str) -> InterpreterResult<()> {
         let mut q = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
@@ -67,6 +74,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Adds the top two quantities on the stack.
     pub fn op_add(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
@@ -76,6 +84,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Subtracts the top two quantities on the stack.
     pub fn op_sub(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
@@ -85,6 +94,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Multiplies the top two quantities on the stack.
     pub fn op_mul(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
@@ -93,6 +103,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Divides the top two quantities on the stack.
     pub fn op_div(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
@@ -101,6 +112,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Prints the top of the stack without altering it.
     pub fn op_p(&mut self) -> InterpreterResult<()> {
         let q = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
@@ -110,6 +122,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Prints the top of the stack and pops it.
     pub fn op_n(&mut self) -> InterpreterResult<()> {
         let q = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
@@ -117,11 +130,13 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Prints the entire stack.
     pub fn op_f(&mut self) -> InterpreterResult<()> {
         (self.output)(Output::QuantityList(self.stack.clone()));
 
         Ok(())
     }
+    /// Duplicates the top of the stack.
     pub fn op_d(&mut self) -> InterpreterResult<()> {
         let q = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
@@ -130,11 +145,13 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Clears the stack.
     pub fn op_c(&mut self) -> InterpreterResult<()> {
         self.stack.clear();
 
         Ok(())
     }
+    /// Swaps the top two elements of the stack.
     pub fn op_r(&mut self) -> InterpreterResult<()> {
         let a = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let b = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
@@ -144,6 +161,7 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Prints a summary of the unit system, including all base units, derived units, and their scale and offset.
     pub fn op_upper_u(&mut self) -> InterpreterResult<()> {
         let mut output = String::from("Base units:\n");
 
@@ -165,9 +183,11 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Invokes the unit solver. See [here](https://github.com/eternal-flame-AD/unitdc-rs/wiki/The-Unit-Solver) for instructions.
     pub fn op_s(&mut self) -> InterpreterResult<()> {
         let target = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
+        // first figure out how many known quantities we have
         let n_src_quantities = target.number_in_derived_unit().to_integer();
         if n_src_quantities.to_usize().unwrap_or(0) > self.stack.len() {
             return Err(InterpreterError::StackUnderflow);
@@ -176,6 +196,7 @@ impl<'a> Interpreter<'a> {
             .stack
             .split_off(self.stack.len() - n_src_quantities.to_usize().unwrap_or(0));
         let dst_unit = target.unit.reduce();
+        // Check that all units involved are present
         let mut units_involved = Vec::new();
         for q in &src_quantities {
             for u in &q.unit.0 {

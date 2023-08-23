@@ -12,6 +12,7 @@ pub mod units;
 
 use units::{DerivedUnit, UnitCombo};
 
+/// A quantity of a combination of a number, the unit combination, and a list of derived units to use when formatting the quantity.
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct Quantity {
     pub number: BigRational,
@@ -41,6 +42,7 @@ pub enum QuantityError {
 }
 
 impl Quantity {
+    /// Create a new quantity with the given number and unit combination.
     pub fn new(number: BigRational, unit: UnitCombo) -> Self {
         Quantity {
             number,
@@ -48,6 +50,7 @@ impl Quantity {
             use_derived_unit: Vec::new(),
         }
     }
+    /// Computes the "user-facing" number of the quantity, considering the offset and scale of matching derived units.
     pub fn number_in_derived_unit(&self) -> BigRational {
         let mut number = self.number.clone();
 

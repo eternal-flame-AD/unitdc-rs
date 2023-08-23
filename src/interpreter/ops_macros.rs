@@ -3,6 +3,10 @@ use crate::quantity::units::{BaseUnit, DerivedUnit};
 use super::{Interpreter, InterpreterError, InterpreterResult};
 
 impl<'a> Interpreter<'a> {
+    /// Defines a new base unit.
+    ///
+    /// For example to define a unit "usd" (US Dollar), you would do:
+    /// `@base(usd)`
     pub fn op_macro_baseunit(&mut self, arg: &str) -> InterpreterResult<()> {
         let symbol = arg.trim();
 
@@ -16,6 +20,11 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    /// Defines a new derived unit.
+    ///
+    /// This is done by popping a "scale" and then an "offset" from the stack.
+    /// For example, to define a new unit "mpg" (miles per gallon), you would do:
+    /// `0 (mi) 1 (gal) / 1 (mi) 1 (gal) / @derived(mpg)`
     pub fn op_macro_derivedunit(&mut self, arg: &str) -> InterpreterResult<()> {
         let symbol = arg.trim();
 

@@ -13,8 +13,11 @@ use crate::{
 
 use thiserror::Error;
 
+/// All other operations.
 pub mod ops;
+/// Macro operations.
 pub mod ops_macros;
+/// Variable I/O operations.
 pub mod ops_variables;
 
 pub struct Interpreter<'a> {
@@ -64,6 +67,7 @@ impl<'a> Interpreter<'a> {
             output,
         }
     }
+    /// Reads all tokens from the tokenizer and processes them.
     pub fn process_tokens<R: Read>(
         &mut self,
         tokenizer: &mut Tokenizer<R>,

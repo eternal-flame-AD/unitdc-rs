@@ -13,6 +13,7 @@ extern "C" {
     fn log(s: String);
 }
 
+/// Runs a string in the interpreter.
 #[wasm_bindgen]
 pub fn unitdc_input(input: String) -> Result<(), JsValue> {
     unsafe {
@@ -23,6 +24,7 @@ pub fn unitdc_input(input: String) -> Result<(), JsValue> {
     Ok(())
 }
 
+/// Initializes the interpreter, taking a callback function to send output to.
 #[wasm_bindgen]
 pub fn unitdc_init(js_output: Function) {
     unsafe {
