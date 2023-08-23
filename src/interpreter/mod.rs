@@ -86,6 +86,7 @@ impl<'a> Interpreter<'a> {
                 Token::Operator('d') => self.op_d()?,
                 Token::Operator('r') => self.op_r()?,
                 Token::Operator('s') => self.op_s()?,
+                Token::Operator('U') => self.op_upper_u()?,
                 Token::VarRecall(name) => self.op_recall(&name)?,
                 Token::VarStore(name) => self.op_store(&name)?,
                 Token::MacroInvoke((name, args)) => match name.as_str() {

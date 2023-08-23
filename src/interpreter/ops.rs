@@ -144,6 +144,27 @@ impl<'a> Interpreter<'a> {
 
         Ok(())
     }
+    pub fn op_upper_u(&mut self) -> InterpreterResult<()> {
+        let mut output = String::from("Base units:\n");
+
+        for u in &self.unit_system.base_units() {
+            output.push_str(&format!("{}, ", u.symbol));
+        }
+        output.pop();
+        output.pop();
+        output.push_str("\n\nDerived units:\n");
+
+        for u in &self.unit_system.derived_units() {
+            output.push_str(&format!(
+                "{} = {} ({}) + {}\n",
+                u.symbol, u.scale, u.exponents, u.offset
+            ));
+        }
+
+        (self.output)(Output::Message(output));
+
+        Ok(())
+    }
     pub fn op_s(&mut self) -> InterpreterResult<()> {
         let target = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 

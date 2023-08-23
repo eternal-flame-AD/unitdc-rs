@@ -55,6 +55,22 @@ impl UnitSystem {
     pub fn push_derived_unit(&mut self, unit: DerivedUnit) {
         self.derived_units.insert(unit.symbol.clone(), unit);
     }
+    pub fn base_units(&self) -> Vec<BaseUnit> {
+        let mut base_units = Vec::new();
+        for unit in self.base_units.values() {
+            base_units.push(unit.clone());
+        }
+        base_units.sort_by(|a, b| a.symbol.cmp(&b.symbol));
+        base_units
+    }
+    pub fn derived_units(&self) -> Vec<DerivedUnit> {
+        let mut derived_units = Vec::new();
+        for unit in self.derived_units.values() {
+            derived_units.push(unit.clone());
+        }
+        derived_units.sort_by(|a, b| format!("{}", a.exponents).cmp(&format!("{}", b.exponents)));
+        derived_units
+    }
 }
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]

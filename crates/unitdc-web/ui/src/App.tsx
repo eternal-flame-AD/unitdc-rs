@@ -179,7 +179,7 @@ function App() {
                   )
                 case 'message':
                   return (
-                    <div key={index}>Message: {cell.text}</div>
+                    <pre key={index}>{cell.text}</pre>
                   )
               }
             })
