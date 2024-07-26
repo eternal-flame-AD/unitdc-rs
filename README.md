@@ -9,3 +9,15 @@ This is a dc-like quantity calculator project, featuring a REPL cli and a Web UI
 [Expression Syntax](https://github.com/eternal-flame-AD/unitdc-rs/wiki/Expressions)
 
 [Examples](https://github.com/eternal-flame-AD/unitdc-rs/wiki/Examples)
+
+## License
+
+This project is licensed under the Apache-2.0 license, see [LICENSE](LICENSE) for more information.
+
+### Dependency Licenses
+
+Licenses for dependencies:
+
+[Table of Dependencies w/SPDX identifiers](./LICENSE-dependencies)
+
+A mapping of licenses to their SPDX identifiers can be found [here](https://spdx.org/licenses/).

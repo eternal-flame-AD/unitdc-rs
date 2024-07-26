@@ -1,0 +1,40 @@
+name: Rust Check
+
+on: [push, pull_request]
+
+jobs:
+  check:
+    name: Cargo Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust: [stable, beta, nightly]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+      - name: Cargo Check
+        run: cargo check
+
+  clippy:
+    name: Cargo Clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy
+      - name: Run Clippy
+        run: cargo clippy -- -D warnings
+
+  deps:
+    name: Check Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check Dependencies
+        run: scripts/check-deps.sh

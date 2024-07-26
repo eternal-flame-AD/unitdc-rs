@@ -40,6 +40,12 @@ impl Display for ReaderCursor {
     }
 }
 
+impl Default for ReaderCursor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ReaderCursor {
     pub fn new() -> Self {
         ReaderCursor { line: 1, column: 1 }
@@ -63,7 +69,7 @@ impl<R: std::io::Read> Tokenizer<R> {
         match self.input.read(&mut buf) {
             Ok(0) => Ok(None),
             Ok(_) => {
-                if buf[0] == '\n' as u8 {
+                if buf[0] == b'\n' {
                     self.cursor.line += 1;
                     self.cursor.column = 1;
                 } else {
@@ -254,6 +260,7 @@ mod tests {
             .unwrap()
             .unwrap()
             .roughly_eq(&Token::Number(
+                #[allow(clippy::approx_constant)]
                 BigRational::from_f64(3.14).expect("Failed to parse number")
             )));
     }

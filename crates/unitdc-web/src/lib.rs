@@ -63,7 +63,6 @@ pub fn unitdc_init(js_output: Function) {
 
 #[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
-    #[cfg(feature = "console_log")]
     console_log::init().expect("could not initialize logger");
     set_panic_hook();
 

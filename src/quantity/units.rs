@@ -31,6 +31,12 @@ impl Debug for UnitSystem {
     }
 }
 
+impl Default for UnitSystem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UnitSystem {
     pub fn new() -> Self {
         UnitSystem {
@@ -135,6 +141,12 @@ pub struct UnitExponent {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UnitCombo(pub Vec<UnitExponent>);
 
+impl Default for UnitCombo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl UnitCombo {
     pub fn new() -> Self {
         UnitCombo(Vec::new())
@@ -177,7 +189,7 @@ impl Display for UnitCombo {
     }
 }
 
-impl<'a> PartialEq for UnitCombo {
+impl PartialEq for UnitCombo {
     fn eq(&self, other: &Self) -> bool {
         let mut self_exponents = self.0.clone();
         let mut other_exponents = other.0.clone();

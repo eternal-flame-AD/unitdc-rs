@@ -9,8 +9,8 @@ pub fn transpose<T: Clone>(matrix: &Vec<Vec<T>>) -> Vec<Vec<T>> {
     let mut result = Vec::new();
     for j in 0..matrix[0].len() {
         let mut row = Vec::new();
-        for i in 0..matrix.len() {
-            row.push(matrix[i][j].clone());
+        for src_row in matrix {
+            row.push(src_row[j].clone());
         }
         result.push(row);
     }
@@ -47,7 +47,7 @@ where
         self.matrix.len()
     }
     pub fn m(&self) -> usize {
-        if self.matrix.len() == 0 {
+        if self.matrix.is_empty() {
             return 0;
         }
         self.matrix[0].len()
