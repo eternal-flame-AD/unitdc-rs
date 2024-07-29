@@ -1,3 +1,3 @@
 (MIT OR Apache-2.0) AND Unicode-DFS-2016 (1): unicode-ident
 Apache-2.0 (1): unitdc
-Apache-2.0 OR MIT (13): autocfg, log, num-bigint, num-integer, num-rational, num-traits, proc-macro2, quote, serde, serde_derive, syn, thiserror, thiserror-impl
+Apache-2.0 OR MIT (15): autocfg, either, itertools, log, num-bigint, num-integer, num-rational, num-traits, proc-macro2, quote, serde, serde_derive, syn, thiserror, thiserror-impl
