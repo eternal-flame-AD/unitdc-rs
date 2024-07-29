@@ -3,6 +3,7 @@ use std::{
     ops::{Add, Div, Mul, Sub},
 };
 
+use itertools::Itertools;
 use num_rational::BigRational;
 use num_traits::ToPrimitive;
 use serde::{ser::SerializeStruct, Deserialize, Serialize, Serializer};
@@ -147,6 +148,16 @@ impl Mul for Quantity {
                 use_derived_unit.push(lhs_d.clone() * rhs_d.clone());
             }
         }
+        for lhs_d in &self.use_derived_unit {
+            use_derived_unit.push(lhs_d.clone());
+        }
+        for rhs_d in &rhs.use_derived_unit {
+            use_derived_unit.push(rhs_d.clone());
+        }
+        use_derived_unit = use_derived_unit
+            .into_iter()
+            .unique_by(|d| d.symbol.clone())
+            .collect();
 
         Quantity {
             number,
@@ -168,6 +179,16 @@ impl Div for Quantity {
                 use_derived_unit.push(lhs_d.clone() / rhs_d.clone());
             }
         }
+        for lhs_d in &self.use_derived_unit {
+            use_derived_unit.push(lhs_d.clone());
+        }
+        for rhs_d in &rhs.use_derived_unit {
+            use_derived_unit.push(rhs_d.clone());
+        }
+        use_derived_unit = use_derived_unit
+            .into_iter()
+            .unique_by(|d| d.symbol.clone())
+            .collect();
 
         Quantity {
             number,

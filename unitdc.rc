@@ -18,11 +18,16 @@
 0 (m) 1 1.093613298 / @derived(yd)
 0 (m) 1 0.0006213712 / @derived(mi)
 
-@base(degC)
-0 (degC) 273.15 @derived(K)
+@base(K)
+273.15 (K) 1 @derived(degC)
 _-5 9 / 32 * (degC) 5 9 / @derived(degF)
 
 @base(mol)
+0 (mol) 1e3 @derived(kmol)
+0 (mol) 1e-3 @derived(mmol)
+0 (mol) 1e-6 @derived(umol)
+0 (mol) 1e-9 @derived(nmol)
+0 (mol) 1e-12 @derived(pmol)
 
 @base(l)
 0 (l) 1e-1 @derived(dl)

@@ -11,6 +11,9 @@ use crate::{
     tokenizer::{token::Token, ReaderCursor, Tokenizer, TokenizerError},
 };
 
+use itertools::Itertools;
+use num_bigint::BigInt;
+use num_traits::Zero;
 use thiserror::Error;
 
 /// All other operations.
@@ -65,6 +68,30 @@ impl<'a> Interpreter<'a> {
             unit_system: UnitSystem::new(),
             stack: Vec::new(),
             output,
+        }
+    }
+    /// Warns about quantities with offset derived units that are used in multiple quantities.
+    pub fn warn_confusing_unit_conversions(&self, qs: &[&Quantity]) {
+        let offset_base_units = qs
+            .iter()
+            .flat_map(|q| q.use_derived_unit.iter())
+            .filter(|d| *d.offset.numer() != BigInt::zero())
+            .flat_map(|d| {
+                d.exponents
+                    .0
+                    .iter()
+                    .unique_by(|d| &d.unit)
+                    .map(|e| (d.clone(), e.unit.clone()))
+            });
+
+        for (u, c) in offset_base_units.into_group_map_by(|(_, u)| u.clone()) {
+            if c.len() > 1 {
+                (self.output)(Output::Message(format!(
+                    "Warning: {} it is used in multiple quantities with an offset. This may lead to unexpected results. Affected derived units: [{}]",
+                    u,
+                    c.iter().map(|(d, _)| d.symbol.clone()).join(", ")
+                )));
+            }
         }
     }
     /// Reads all tokens from the tokenizer and processes them.

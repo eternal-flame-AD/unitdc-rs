@@ -79,7 +79,7 @@ impl UnitSystem {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Serialize, Deserialize)]
 pub struct BaseUnit {
     pub symbol: String,
 }

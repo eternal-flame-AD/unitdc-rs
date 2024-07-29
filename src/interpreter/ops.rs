@@ -79,6 +79,8 @@ impl<'a> Interpreter<'a> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
+        self.warn_confusing_unit_conversions(&[&lhs, &rhs]);
+
         self.stack
             .push((lhs + rhs).map_err(InterpreterError::QuantityError)?);
 
@@ -88,6 +90,8 @@ impl<'a> Interpreter<'a> {
     pub fn op_sub(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
+
+        self.warn_confusing_unit_conversions(&[&lhs, &rhs]);
 
         self.stack
             .push((lhs - rhs).map_err(InterpreterError::QuantityError)?);
@@ -99,6 +103,8 @@ impl<'a> Interpreter<'a> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
 
+        self.warn_confusing_unit_conversions(&[&lhs, &rhs]);
+
         self.stack.push(lhs * rhs);
 
         Ok(())
@@ -107,6 +113,8 @@ impl<'a> Interpreter<'a> {
     pub fn op_div(&mut self) -> InterpreterResult<()> {
         let rhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
         let lhs = self.stack.pop().ok_or(InterpreterError::StackUnderflow)?;
+
+        self.warn_confusing_unit_conversions(&[&lhs, &rhs]);
 
         self.stack.push(lhs / rhs);
 
