@@ -180,7 +180,11 @@ impl Display for UnitCombo {
         exponents.sort_by(|a, b| b.exponent.cmp(&a.exponent));
         for exponent in exponents.iter() {
             if exponent.exponent == 1 {
-                write!(f, "{}", exponent.unit.symbol)?;
+                if exponents.len() > 1 {
+                    write!(f, "({})", exponent.unit.symbol)?;
+                } else {
+                    write!(f, "{}", exponent.unit.symbol)?;
+                }
             } else {
                 write!(f, "({}^{})", exponent.unit.symbol, exponent.exponent)?;
             }
