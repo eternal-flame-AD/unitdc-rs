@@ -137,6 +137,13 @@ function App() {
           text: '',
         }
       ])
+    }).catch(e => {
+      addCells([
+        {
+          type: 'error',
+          text: (e as any).toString(),
+        }
+      ])
     });
   }
 

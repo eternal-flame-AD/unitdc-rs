@@ -30,3 +30,6 @@ members = [
 
 [profile.release.package.unitdc-web]
 opt-level = "s"
+
+[profile.release]
+lto = true
