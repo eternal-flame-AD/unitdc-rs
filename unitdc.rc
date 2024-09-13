@@ -48,7 +48,7 @@ _-5 9 / 32 * (degC) 5 9 / @derived(degF)
 0 (g) 1e-9 @derived(ng)
 0 (g) 1e-12 @derived(pg)
 
-0 (g) 100 (ml) / 1e-2 @derived(w/v)
+0 (g) 1 (ml) / 1e3 @derived(w/v)
 
 0 (g) 1 (mol) / 1 @derived(Da)
 0 (g) 1 (mol) / 1e3 @derived(kDa)
