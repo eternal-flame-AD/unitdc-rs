@@ -28,7 +28,7 @@ pub fn unitdc_input(input: String) -> Result<(), JsValue> {
 #[wasm_bindgen]
 pub fn unitdc_init(js_output: Function) {
     unsafe {
-        INTERPRETER = Some(Interpreter::new(Box::new(move |output| match output {
+        let mut interp = Interpreter::new(Box::new(move |output| match output {
             Output::Quantity(q) => {
                 js_output
                     .call2(
@@ -52,12 +52,13 @@ pub fn unitdc_init(js_output: Function) {
                     .call2(&JsValue::NULL, &JsValue::from("message"), &JsValue::from(e))
                     .unwrap();
             }
-        })));
-        INTERPRETER
-            .as_mut()
-            .unwrap()
+        }));
+
+        interp
             .run_str(include_str!("../../../unitdc.rc"))
-            .unwrap();
+            .expect("could not run initialization script");
+
+        INTERPRETER = Some(interp);
     }
 }
 
