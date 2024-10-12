@@ -1,5 +1,18 @@
-use log::debug;
-use num_traits::Signed;
+// Copyright 2024 eternal-flame-AD <yume@yumechi.jp>
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use num_traits::{One, Zero};
 use std::{
     fmt::Debug,
     ops::{Add, Div, Mul, Neg, Sub},
@@ -26,7 +39,8 @@ where
         + Div<Output = T>
         + Neg<Output = T>
         + Clone
-        + Signed,
+        + Zero
+        + One,
 {
     matrix: Vec<Vec<T>>,
 }
@@ -40,8 +54,8 @@ where
         + Neg<Output = T>
         + PartialOrd
         + Clone
-        + Signed
-        + Debug,
+        + Zero
+        + One,
 {
     pub fn n(&self) -> usize {
         self.matrix.len()
@@ -126,15 +140,12 @@ where
         self.n_pivoted() < self.m() - 1
     }
     pub fn solve(&mut self) -> Option<Vec<T>> {
-        debug!("starting matrix: {:?}", self.matrix);
         for col in 0..if self.n() < self.m() {
             self.n()
         } else {
             self.m()
         } {
-            debug!("col: {}", col);
             self.reduce_column(col);
-            debug!("matrix: {:?}", self.matrix);
         }
         let mut result = Vec::new();
         for row in 0..self.n() {
